@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Product List</title></head>
+<body>
+<h1>Product List</h1>
+<h3 th:if="${member != null}" th:text="${member.name} + '님, 안녕하세요!'"></h3>
+
+<table border="1">
+  <tr>
+    <th>ID</th><th>Name</th><th>Price</th><th>Image</th><th>Option</th><th>Manage</th>
+  </tr>
+  <tr th:each="p : ${productPage.content}">
+    <td th:text="${p.id}">1</td>
+    <td th:text="${p.name}">이름</td>
+    <td th:text="${p.price}">가격</td>
+    <td><img th:src="${p.imageUrl}" width="100" /></td>
+    <td>
+      <form th:action="@{/user/wishes/wish}" method="post">
+        <select name="optionId" required>
+          <option value="" disabled selected>옵션 선택</option>
+          <option th:each="opt : ${optionMap[p.id]}"
+                  th:value="${opt.id}"
+                  th:text="${opt.name} + ' (재고: ' + ${opt.quantity} + ')'">
+          </option>
+        </select>
+        <button type="submit">위시 추가</button>
+      </form>
+    </td>>
+    <td>
+      <form th:action="@{/user/wishes/delete}" method="post" style="display:inline">
+        <button type="submit">위시 제거</button>
+      </form>
+    </td>
+  </tr>
+
+  <!-- 상품이 없을 경우에 출력함 -->
+  <tr th:if="${productPage.content.isEmpty()}">
+    <td colspan="5">이 페이지에는 상품이 없습니다.</td>
+  </tr>
+</table>
+
+<div>
+  <ul style="list-style: none; display: flex; padding: 0;">
+    <li th:each="i : ${#numbers.sequence(0, maxPage - 1)}" style="margin-right: 10px;">
+      <a th:href="@{/user/products(page=${i})}"
+         th:style="${i == productPage.number} ? 'font-weight: bold;' : ''"
+         th:text="${i + 1}">1</a>
+    </li>
+  </ul>
+</div>
+
+<br>
+<a href="/user/wishes">
+  <button>내 위시리스트 보기</button>
+</a>
+</body>
+</html>

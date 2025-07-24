@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>위시리스트</title>
+</head>
+<body>
+<h1>내 위시리스트</h1>
+
+<table border="1">
+  <tr>
+    <th>ID</th><th>이름</th><th>가격</th><th>이미지</th><th>옵션</th>><th>관리</th>
+  </tr>
+  <tr th:each="w : ${wishPage.content}">
+    <td th:text="${w.product.id}">1</td>
+    <td th:text="${w.product.name}">이름</td>
+    <td th:text="${w.product.price}">가격</td>
+    <td><img th:src="${w.product.imageUrl}" alt="이미지" width="100"></td>
+    <td>
+      <span th:text="${w.option.name}">옵션 이름</span><br/>
+      <span th:text="'재고: ' + ${w.option.quantity}">재고</span>
+    </td>
+    <td>
+      <form th:action="@{/user/wishes/delete}" method="post">
+        <input type="hidden" name="optionId" th:value="${w.option.id}" />
+        <button type="submit">위시 제거</button>
+      </form>
+    </td>
+  </tr>
+
+  <tr th:if="${wishPage.content.isEmpty()}">
+    <td colspan="5">이 페이지에는 위시 상품이 없습니다.</td>
+  </tr>
+
+</table>
+
+<div>
+  <ul style="list-style: none; display: flex; padding: 0;">
+    <li th:each="i : ${#numbers.sequence(0, maxPage - 1)}" style="margin-right: 10px;">
+      <a th:href="@{/user/wishes(page=${i})}"
+         th:style="${i == wishPage.number} ? 'font-weight: bold;' : ''"
+         th:text="${i + 1}">1</a>
+    </li>
+  </ul>
+</div>
+
+<br>
+<a href="/user/products">← 상품 목록으로 돌아가기</a>
+</body>
+</html>

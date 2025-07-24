@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${formType == 'add'} ? '장바구니 담기' : '장바구니에서 삭제'"></title>
+</head>
+<body>
+
+<form th:if="${formType == 'add'}"
+      th:action="@{/user/products}"
+      method="post"
+      th:object="${product}">
+  <label>
+    상품 이름:
+    <input type="text" th:field="*{name}" />
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+  </label><br>
+
+  <label>
+    가격:
+    <input type="number" th:field="*{price}" />
+    <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+  </label><br>
+
+  <label>
+    이미지 URL:
+    <input type="text" th:field="*{imageUrl}" />
+    <span th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></span>
+  </label><br>
+
+  <button type="submit">등록</button>
+</form>
+
+<form th:if="${formType == 'edit'}"
+      th:action="@{/admin/products/{id}(id=${product.id})}"
+      method="post"
+      th:object="${product}">
+  <label>
+    상품 이름:
+    <input type="text" th:field="*{name}" />
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+  </label><br>
+
+  <label>
+    가격:
+    <input type="number" th:field="*{price}" />
+    <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+  </label><br>
+
+  <label>
+    이미지 URL:
+    <input type="text" th:field="*{imageUrl}" />
+    <span th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></span>
+  </label><br>
+
+  <button type="submit">수정</button>
+</form>
+
+<a th:href="@{/admin/products}">목록으로 돌아가기</a>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${formType == 'add'} ? '유저 등록' : '유저 정보 수정'"></title>
+</head>
+<body>
+
+<form th:if="${formType == 'add'}"
+      th:action="@{/admin/members}"
+      method="post"
+      th:object="${member}">
+  <label>
+    ID:
+    <input type="text" th:field="*{id}" />
+    <span th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></span>
+  </label><br>
+
+  <label>
+    PASSWORD:
+    <input type="number" th:field="*{password}" />
+    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+  </label><br>
+
+  <label>
+    EMAIL:
+    <input type="text" th:field="*{email}" />
+    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+  </label><br>
+
+  <label>
+    ADDRESS:
+    <input type="text" th:field="*{address}" />
+    <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+  </label><br>
+
+  <button type="submit">유저 등록</button>
+</form>
+
+<form th:if="${formType == 'edit'}"
+      th:action="@{'/admin/members/' + ${member.id}}"
+      method="post"
+      th:object="${member}">
+  <label>
+    ID:
+    <input type="text" th:field="*{id}" />
+    <span th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></span>
+  </label><br>
+
+  <label>
+    PASSWORD:
+    <input type="number" th:field="*{password}" />
+    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+  </label><br>
+
+  <label>
+    NAME:
+    <input type="text" th:field="*{name}" />
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+  </label><br>
+
+  <label>
+    EMAIL:
+    <input type="text" th:field="*{email}" />
+    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+  </label><br>
+
+  <label>
+    ADDRESS:
+    <input type="text" th:field="*{address}" />
+    <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+  </label><br>
+
+  <button type="submit">유저 수정</button>
+</form>
+
+<a th:href="@{/admin/members}">목록으로 돌아가기</a>
+
+</body>
+</html>

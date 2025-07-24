@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${formType == 'add'} ? '상품 등록' : '상품 수정'"></title>
+
+  <script>
+    // 초기 옵션 개수 Thymeleaf에서 주입
+    let optionIndex = /*[[${product.options.size()}]]*/ 0;
+
+    // 옵션 추가 함수
+    function addOptionField(name = '', quantity = '') {
+      const container = document.getElementById("optionContainer");
+
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <label>옵션 이름: <input type="text" name="options[\${optionIndex}].name" value="\${name}" required /></label>
+        <label>수량: <input type="number" name="options[\${optionIndex}].quantity" value="\${quantity}" required min="1" /></label>
+        <button type="button" onclick="this.parentElement.remove()">❌</button>
+        <br>
+      `.replace(/\${optionIndex}/g, optionIndex)
+              .replace("\${name}", name)
+              .replace("\${quantity}", quantity);
+
+      container.appendChild(div);
+      optionIndex++;
+    }
+
+    window.onload = function () {
+      const isAddForm = /*[[${formType == 'add'}]]*/ true;
+
+      if (isAddForm && optionIndex === 0) {
+        addOptionField(); // 등록일 때만 하나 기본 제공
+      }
+    };
+  </script>
+</head>
+<body>
+
+<!-- ✅ 상품 등록 -->
+<form th:if="${formType == 'add'}"
+      th:action="@{/admin/products}"
+      method="post"
+      th:object="${product}">
+
+  <h2>상품 등록</h2>
+
+  <label>상품 이름:
+    <input type="text" th:field="*{name}" />
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+  </label><br>
+
+  <label>가격:
+    <input type="number" th:field="*{price}" />
+    <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+  </label><br>
+
+  <label>이미지 URL:
+    <input type="text" th:field="*{imageUrl}" />
+    <span th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></span>
+  </label><br>
+
+  <label>'카카오' 사용 MD 협의 완료:
+    <input type="checkbox" th:field="*{MDapproved}" />
+  </label><br>
+
+  <h3>옵션 목록</h3>
+  <div id="optionContainer"></div>
+
+  <button type="button" onclick="addOptionField()">➕ 옵션 추가</button><br><br>
+  <button type="submit">등록</button>
+</form>
+
+<!-- ✅ 상품 수정 -->
+<form th:if="${formType == 'edit'}"
+      th:action="@{/admin/products/{id}(id=${product.id})}"
+      method="post"
+      th:object="${product}">
+
+  <h2>상품 수정</h2>
+
+  <label>상품 이름:
+    <input type="text" th:field="*{name}" />
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+  </label><br>
+
+  <label>가격:
+    <input type="number" th:field="*{price}" />
+    <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+  </label><br>
+
+  <label>이미지 URL:
+    <input type="text" th:field="*{imageUrl}" />
+    <span th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></span>
+  </label><br>
+
+  <label>'카카오' 사용 MD 협의 완료:
+    <input type="checkbox" th:field="*{MDapproved}" />
+  </label><br>
+
+  <h3>옵션 목록</h3>
+  <div id="optionContainer">
+    <div th:each="opt, iterStat : *{options}">
+      <script th:inline="javascript">
+        addOptionField([[${opt.name}]], [[${opt.quantity}]]);
+      </script>
+    </div>
+  </div>
+
+  <button type="button" onclick="addOptionField()">➕ 옵션 추가</button><br><br>
+  <button type="submit">수정</button>
+</form>
+
+<a th:href="@{/admin/products}">목록으로 돌아가기</a>
+
+</body>
+</html>

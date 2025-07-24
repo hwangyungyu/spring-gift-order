@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>회원 가입</title></head>
+<body>
+
+<form th:action="@{/register}" method="post" th:object="${member}">
+  <label>
+    ID:
+    <input type="text" th:field="*{id}" />
+    <span th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></span>
+  </label><br>
+
+  <label>
+    Password:
+    <input type="text" th:field="*{password}" />
+    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+  </label><br>
+
+  <label>
+    Name:
+    <input type="text" th:field="*{name}" />
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+  </label><br>
+
+  <label>
+    Email:
+    <input type="text" th:field="*{email}" />
+    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+  </label><br>
+
+  <label>
+    Address:
+    <input type="text" th:field="*{address}" />
+    <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+  </label><br>
+
+  <button type="submit">회원 가입</button>
+</form>
+
+<a th:href="@{/login}">로그인</a>
+
+</body>
+</html>
