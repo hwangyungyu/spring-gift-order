@@ -1,11 +1,15 @@
 # spring-gift-order
 
 # 피드백 반영
-- 닉네임과 이메일 획득
-  > 카카오 쪽에서 권한 획득을 위해 비즈 앱 연동을 해야함
-- LoginResult 클래스의 위치
-- KakaoLoginController 가독성 
-- KakaoOauthClient 로그로 출력하기
+- DataInatializer -> DataInatialize
+오타 변경
+- 회원 가입 아이디 -> 닉네임 변경 후 따로 추가
+- service 계층 트랜젝션 추가
+- ProductService 변경
 
-# 추가 사항
-- 로그인 화면에서 카카오 로그인 버튼 제작
+# step1 진행
+- kakao login 로직 조금 구현
+
+# 예정된 사항
+- step1 피드백 반영
+- test 변경하기 (id -> nickname) 으로 변경하면서 수정 필요

@@ -29,11 +29,11 @@ public class WishRepositoryTest {
     @Autowired
     private OptionRepository optionRepository;
 
-    private Member createMember(String nickname) {
+    private Member createMember(String name) {
         return memberRepository.save(new Member(
-                nickname,
+                name,
                 "test@kakao.com",
-                "123456789",
+                "pw",
                 "테스터",
                 "주소",
                 "USER"
@@ -63,17 +63,20 @@ public class WishRepositoryTest {
 
     @Test
     void testSaveWishWithOption() {
+        // given
         Member member = createMember("testId");
         Product product = createProduct("아메리카노", 2000);
         Option option = createOption("ICE", 10, product);
         Wish wish = new Wish(member, product, option);
 
+        // when
         wishRepository.save(wish);
 
+        // then
         List<Wish> result = wishRepository.findAll();
         assertThat(result).hasSize(1);
         Wish saved = result.get(0);
-        assertThat(saved.getMember().getNickname()).isEqualTo("testId");
+        assertThat(saved.getMember().getId()).isEqualTo("testId");
         assertThat(saved.getProduct().getName()).isEqualTo("아메리카노");
         assertThat(saved.getOption().getName()).isEqualTo("ICE");
         assertThat(saved.getOption().getQuantity()).isEqualTo(10);
