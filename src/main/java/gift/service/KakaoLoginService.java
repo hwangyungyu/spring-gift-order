@@ -6,6 +6,8 @@ import gift.Entity.Member;
 import gift.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
@@ -16,7 +18,7 @@ public class KakaoLoginService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
 
-
+    private static final Logger log = LoggerFactory.getLogger(KakaoLoginService.class);
 
     public KakaoLoginService(KakaoOauthClient kakaoOauthClient,
                              MemberRepository memberRepository,
@@ -40,7 +42,7 @@ public class KakaoLoginService {
             setTokenAsCookie(response, token);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("카카오 로그인 중 오류 발생", e);
             throw new RuntimeException("카카오 로그인 처리 중 오류 발생: " + e.getMessage());
         }
     }
