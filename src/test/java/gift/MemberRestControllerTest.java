@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClient;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql("/data.sql")
 public class MemberRestControllerTest {
 
     @LocalServerPort
@@ -68,8 +69,8 @@ public class MemberRestControllerTest {
 
     @Test
     public void testRegisterDuplicateId() {
-        var url = "http://localhost:" + port + "/members/register";
-        var duplicate = new Member("helloworld", "new@kakao.com", "password", "중복유저", "주소", "USER");
+        var url = "http://localhost:" + port + "/api/register";
+        var duplicate = new Member("hello_world", "new@kakao.com", "password", "중복유저", "주소", "USER");
 
         var response = client.post()
                 .uri(url)
@@ -82,11 +83,38 @@ public class MemberRestControllerTest {
     }
 
     @Test
+    public void loginCheck() {
+        var loginUrl = "http://localhost:" + port + "/api/login";
+        var loginReq = new MemberRequest("hello_world", "123456789");
+
+        var loginRes = client.post()
+                .uri(loginUrl)
+                .body(loginReq)
+                .retrieve()
+                .toEntity(TokenResponse.class);
+
+        String token = loginRes.getBody().getToken();
+
+        var productsPageUrl = "http://localhost:" + port + "/user/products";
+        var html = client.get()
+                .uri(productsPageUrl)
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .body(String.class);
+
+        assertThat(html).contains("hello_world님, 안녕하세요!");
+    }
+
+    @Test
     public void testLoginAsAdminAndUser() {
+        // 관리자 계정 생성
+        Member admin = new Member("admin01", "admin@kakao.com", "admin_pw", "관리자", "서울", "ADMIN");
+        memberRepository.save(admin);
+
         // 관리자 로그인
         var adminLoginRes = client.post()
-                .uri("http://localhost:" + port + "/members/login")
-                .body(new MemberRequest("admin01", "123456789"))
+                .uri("http://localhost:" + port + "/api/login")
+                .body(new MemberRequest("admin01", "admin_pw"))
                 .retrieve()
                 .toEntity(TokenResponse.class);
 
@@ -95,7 +123,7 @@ public class MemberRestControllerTest {
 
         // 유저 로그인
         var userLoginRes = client.post()
-                .uri("http://localhost:" + port + "/members/login")
+                .uri("http://localhost:" + port + "/api/login")
                 .body(new MemberRequest("hello_world", "123456789"))
                 .retrieve()
                 .toEntity(TokenResponse.class);
