@@ -66,7 +66,7 @@ public class KakaoLoginService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(URI.create(tokenUrl), request, String.class);
 
-        System.out.println("🔑 카카오 토큰 응답: " + response.getBody());
+        System.out.println("카카오 토큰 응답: " + response.getBody());
 
         JsonNode node = objectMapper.readTree(response.getBody());
         return node.get("access_token").asText();
@@ -81,7 +81,7 @@ public class KakaoLoginService {
         HttpEntity<Void> request = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(userInfoUrl, HttpMethod.GET, request, String.class);
 
-        System.out.println("👤 사용자 정보 응답: " + response.getBody());
+        System.out.println("사용자 정보 응답: " + response.getBody());
 
         return objectMapper.readTree(response.getBody());
     }
