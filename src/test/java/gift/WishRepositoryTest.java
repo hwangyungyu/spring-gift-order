@@ -76,7 +76,7 @@ public class WishRepositoryTest {
         List<Wish> result = wishRepository.findAll();
         assertThat(result).hasSize(1);
         Wish saved = result.get(0);
-        assertThat(saved.getMember().getId()).isEqualTo("testId");
+        assertThat(saved.getMember().getNickname()).isEqualTo("testId");
         assertThat(saved.getProduct().getName()).isEqualTo("아메리카노");
         assertThat(saved.getOption().getName()).isEqualTo("ICE");
         assertThat(saved.getOption().getQuantity()).isEqualTo(10);

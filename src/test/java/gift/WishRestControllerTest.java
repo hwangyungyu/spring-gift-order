@@ -47,7 +47,7 @@ public class WishRestControllerTest {
         // 로그인
         var loginRes = client.post()
                 .uri("http://localhost:" + port + "/api/login")
-                .body(new MemberRequest("helloworld", "123456789", null))
+                .body(new MemberRequest("helloworld", "123456789"))
                 .retrieve()
                 .toEntity(TokenResponse.class);
 
