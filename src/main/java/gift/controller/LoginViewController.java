@@ -1,7 +1,7 @@
 package gift.controller;
 
 import gift.Entity.Member;
-import gift.LoginResult;
+import gift.response.LoginResult;
 import gift.repository.MemberRepository;
 import gift.request.MemberRequest;
 import gift.service.MemberService;

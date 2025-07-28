@@ -7,7 +7,7 @@
 
 <table border="1">
   <tr>
-    <th>ID</th><th>Name</th><th>Price</th><th>Image</th><th>Option</th><th>Manage</th>
+    <th>ID</th><th>Name</th><th>Price</th><th>Image</th><th>Option</th>
   </tr>
   <tr th:each="p : ${productPage.content}">
     <td th:text="${p.id}">1</td>
@@ -24,11 +24,6 @@
           </option>
         </select>
         <button type="submit">위시 추가</button>
-      </form>
-    </td>>
-    <td>
-      <form th:action="@{/user/wishes/delete}" method="post" style="display:inline">
-        <button type="submit">위시 제거</button>
       </form>
     </td>
   </tr>

@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.LoginResult;
+import gift.response.LoginResult;
 import gift.request.MemberRequest;
 import gift.response.TokenResponse;
 import gift.service.MemberService;

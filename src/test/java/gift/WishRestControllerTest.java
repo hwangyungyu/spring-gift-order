@@ -1,16 +1,20 @@
 package gift;
 
 import gift.Entity.Member;
+import gift.Entity.Option;
 import gift.Entity.Product;
 import gift.repository.MemberRepository;
+import gift.repository.OptionRepository;
 import gift.repository.ProductRepository;
 import gift.request.MemberRequest;
+import gift.request.WishRequest;
 import gift.response.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestClient;
 
@@ -25,26 +29,38 @@ public class WishRestControllerTest {
     RestClient client = RestClient.builder().build();
 
     @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
     ProductRepository productRepository;
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    OptionRepository optionRepository;
 
     String token;
+    Long productId;
+    Long optionId;
 
     @BeforeEach
     void setup() {
-        Member member = new Member("helloworld", "hello@kakao.com", "123456789", "테스트", "대한민국", "USER");
-        memberRepository.save(member);
+
+        if (memberRepository.findByNickname("helloworld").isEmpty()) {
+            memberRepository.save(new Member(
+                    "helloworld", "hello@kakao.com", "123456789", "테스트", "대한민국", "USER"
+            ));
+        }
 
         Product product = new Product();
         product.setName("테스트 상품");
         product.setPrice(3000);
         product.setImageUrl("http://image.com");
         product.setMDapproved(true);
-        productRepository.save(product);
+        product = productRepository.save(product);
+        productId = product.getId();
 
-        // 로그인
+        Option opt = new Option("default", 10, product);
+        opt = optionRepository.save(opt); // 명시 저장
+        optionId = opt.getId();
+
+        // 3. 로그인
         var loginRes = client.post()
                 .uri("http://localhost:" + port + "/api/login")
                 .body(new MemberRequest("helloworld", "123456789"))
@@ -56,36 +72,41 @@ public class WishRestControllerTest {
 
     @Test
     void testAddWish() {
-        Long productId = productRepository.findAll().get(0).getId();
-        var url = "http://localhost:" + port + "/user/wishes/" + productId + "/wish";
+        var url = "http://localhost:" + port + "/wishes";
+        WishRequest req = new WishRequest(productId, optionId);
 
         var response = client.post()
                 .uri(url)
-                .header("Authorization", "Bearer " + token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .body(req)
                 .retrieve()
                 .toBodilessEntity();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FOUND); // 리디렉션됨 (302)
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
     void testRemoveWish() {
-        Long productId = productRepository.findAll().get(0).getId();
+        var url = "http://localhost:" + port + "/wishes";
+        WishRequest req = new WishRequest(productId, optionId);
 
-        // 먼저 위시 등록
+        // 먼저 등록
         client.post()
-                .uri("http://localhost:" + port + "/user/wishes/" + productId + "/wish")
-                .header("Authorization", "Bearer " + token)
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .body(req)
                 .retrieve();
 
-        // 위시 제거
-        var response = client.post()
-                .uri("http://localhost:" + port + "/user/wishes/" + productId + "/delete")
-                .header("Authorization", "Bearer " + token)
+        // 삭제
+        String deleteUrl = "http://localhost:" + port + "/wishes?productId=" + productId + "&optionId=" + optionId;
+
+        var response = client.delete()
+                .uri(deleteUrl)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .toBodilessEntity();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FOUND);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
 

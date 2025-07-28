@@ -45,6 +45,7 @@ public class Member {
     }
 
     // Getter
+    public Long getId() { return id;}
     public String getNickname() { return nickname; }
     public String getEmail() { return email; }
     public String getPassword() { return password; }

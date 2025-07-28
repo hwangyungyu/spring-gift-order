@@ -12,7 +12,6 @@ import org.springframework.web.client.RestClient;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql("/data.sql")
 public class ProductRestControllerTest {
     @LocalServerPort
     private int port;
@@ -24,7 +23,7 @@ public class ProductRestControllerTest {
     @Test
     public void testCreateProduct() {
         var url = "http://localhost:" + port + "/products";
-        var newProduct = new Product(10L, "민트 초코 라떼", 5500, "https://test");
+        var newProduct = new Product(null, "민트 초코 라떼", 5500, "https://test");
         var response = client.post()
                 .uri(url)
                 .body(newProduct)
@@ -46,15 +45,15 @@ public class ProductRestControllerTest {
                 .toEntity(Product.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         var actual = response.getBody();
-        assertThat(actual.getName()).isEqualTo("아이스 카페 아메리카노 T");
+        assertThat(actual.getName()).isEqualTo("아이스 아메리카노 T");
     }
 
     // 처음에 첫번째 데이터를 넣고 시작하니 1번째 데이터를 업데이트하여 테스트
     @Test
     public void testUpdateProduct() {
         var url = "http://localhost:" + port + "/products/1";
-        var updateProduct = new Product(1L, "에스프레소", 5500, "https://test.com/update");
-        var response = client.post()
+        var updateProduct = new Product(null, "에스프레소", 5500, "https://test.com/update");
+        var response = client.put()
                 .uri(url)
                 .body(updateProduct)
                 .retrieve()

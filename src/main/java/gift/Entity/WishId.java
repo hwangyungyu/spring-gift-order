@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class WishId implements Serializable {
-    private String member;
+    private Long member;
     private Long product;
     private Long option;
 
     public WishId() {}
 
-    public WishId(String member, Long product, Long option) {
+    public WishId(Long member, Long product, Long option) {
         this.member = member;
         this.product = product;
         this.option = option;

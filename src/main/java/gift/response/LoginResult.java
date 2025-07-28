@@ -1,4 +1,4 @@
-package gift;
+package gift.response;
 
 import gift.Entity.Member;
 

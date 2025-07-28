@@ -1,7 +1,7 @@
 package gift.service;
 
 import gift.Entity.Member;
-import gift.LoginResult;
+import gift.response.LoginResult;
 import gift.Jwt.JwtUtil;
 import gift.repository.MemberRepository;
 import org.springframework.stereotype.Service;

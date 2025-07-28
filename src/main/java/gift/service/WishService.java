@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.Entity.*;
+import gift.repository.MemberRepository;
 import gift.repository.WishRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,14 +12,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class WishService {
 
     private final WishRepository wishRepository;
+    private final MemberRepository memberRepository;
 
-    public WishService(WishRepository wishRepository) {
+    public WishService(WishRepository wishRepository,  MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
         this.wishRepository = wishRepository;
+    }
+
+    private Member getPersistentMember(Member member) {
+        if (member.getId() == null) {
+            return memberRepository.findByNickname(member.getNickname()).orElseThrow();
+        }
+        return member;
     }
 
     // 찜 추가
     @Transactional
     public void addWish(Member member, Product product, Option option) {
+        member = getPersistentMember(member);
+
         Wish wish = new Wish(member, product, option);
         wishRepository.save(wish);
     }
@@ -26,7 +38,9 @@ public class WishService {
     // 찜 삭제
     @Transactional
     public void removeWish(Member member, Product product, Option option) {
-        WishId id = new WishId(member.getNickname(), product.getId(), option.getId());
+        member = getPersistentMember(member);
+
+        WishId id = new WishId(member.getId(), product.getId(), option.getId());
         wishRepository.deleteById(id);
     }
 
