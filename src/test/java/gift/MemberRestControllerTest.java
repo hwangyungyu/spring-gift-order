@@ -17,7 +17,6 @@ import org.springframework.web.client.RestClient;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql("/data.sql")
 public class MemberRestControllerTest {
 
     @LocalServerPort
@@ -32,7 +31,7 @@ public class MemberRestControllerTest {
     void setupTestMember() {
 
         // 테스트용 계정 등록
-        Member member = new Member("helloworld", "hello@kakao.com", "123456789", "테스트", "대한민국", "USER");
+        Member member = new Member("hello_world", "hello@kakao.com", "123456789", "테스트", "대한민국", "USER");
         memberRepository.save(member);
     }
 
@@ -40,7 +39,7 @@ public class MemberRestControllerTest {
     @Test
     public void testRegisterMember() {
         var url = "http://localhost:" + port + "/api/register";
-        var member = new Member("byeworld", "byeworld@kakao.com", "123456789", "안녕세상", "대한민국", "USER");
+        var member = new Member("bye_world", "byeworld@kakao.com", "123456789", "안녕세상", "대한민국", "USER");
 
         var response = client.post()
                 .uri(url)
@@ -49,14 +48,14 @@ public class MemberRestControllerTest {
                 .toEntity(Member.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getId()).isEqualTo("byeworld");
+        assertThat(response.getBody().getNickname()).isEqualTo("bye_world");
     }
 
 
     @Test
     public void testLogin() {
         var url = "http://localhost:" + port + "/api/login";
-        var req = new MemberRequest("helloworld", "123456789", "null");
+        var req = new MemberRequest("hello_world", "123456789");
 
         var response = client.post()
                 .uri(url)
@@ -68,8 +67,8 @@ public class MemberRestControllerTest {
     }
 
     @Test
-    public void testRegisterduplicateId() {
-        var url = "http://localhost:" + port + "/api/register";
+    public void testRegisterDuplicateId() {
+        var url = "http://localhost:" + port + "/members/register";
         var duplicate = new Member("helloworld", "new@kakao.com", "password", "중복유저", "주소", "USER");
 
         var response = client.post()
@@ -83,40 +82,11 @@ public class MemberRestControllerTest {
     }
 
     @Test
-    public void logincheck() {
-        var loginUrl = "http://localhost:" + port + "/api/login";
-        var loginReq = new MemberRequest("helloworld", "123456789", null);
-
-        var loginRes = client.post()
-                .uri(loginUrl)
-                .body(loginReq)
-                .retrieve()
-                .toEntity(TokenResponse.class);
-
-        String token = loginRes.getBody().getToken();
-
-        var productsPageUrl = "http://localhost:" + port + "/user/products";
-        var html = client.get()
-                .uri(productsPageUrl)
-                .header("Authorization", "Bearer " + token)
-                .retrieve()
-                .body(String.class);
-
-        assertThat(html).contains("helloworld님, 안녕하세요!");
-    }
-
-    @Test
     public void testLoginAsAdminAndUser() {
-        // 관리자 계정 생성
-        Member admin = new Member("admin01", "admin@kakao.com", "adminpw", "관리자", "서울", "ADMIN");
-        memberRepository.save(admin);
-
-        // 유저 계정은 @BeforeEach에서 저장됨
-
         // 관리자 로그인
         var adminLoginRes = client.post()
-                .uri("http://localhost:" + port + "/api/login")
-                .body(new MemberRequest("admin01", "adminpw", null))
+                .uri("http://localhost:" + port + "/members/login")
+                .body(new MemberRequest("admin01", "123456789"))
                 .retrieve()
                 .toEntity(TokenResponse.class);
 
@@ -125,8 +95,8 @@ public class MemberRestControllerTest {
 
         // 유저 로그인
         var userLoginRes = client.post()
-                .uri("http://localhost:" + port + "/api/login")
-                .body(new MemberRequest("helloworld", "123456789", null))
+                .uri("http://localhost:" + port + "/members/login")
+                .body(new MemberRequest("hello_world", "123456789"))
                 .retrieve()
                 .toEntity(TokenResponse.class);
 

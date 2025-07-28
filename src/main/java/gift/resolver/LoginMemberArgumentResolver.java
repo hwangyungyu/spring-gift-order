@@ -40,23 +40,32 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         if (httpServletRequest == null) return null;
 
+        String authHeader = httpServletRequest.getHeader("Authorization");
         String token = null;
-        Cookie[] cookies = httpServletRequest.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("Authorization".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
+
+        if (token == null){
+            Cookie[] cookies = httpServletRequest.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("Authorization".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        break;
+                    }
                 }
             }
         }
+
 
         if (token != null) {
             try {
                 Claims claims = jwtUtil.parseToken(token);
 
                 Member member = new Member();
-                member.setId(claims.getSubject());
+                member.setNickname(claims.getSubject());
                 member.setName((String) claims.get("name"));
                 member.setEmail((String) claims.get("email"));
                 member.setAddress((String) claims.get("address"));

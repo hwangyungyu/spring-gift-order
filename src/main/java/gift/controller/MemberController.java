@@ -1,7 +1,7 @@
-package gift.Controller;
+package gift.controller;
 
 import gift.Entity.Member;
-import gift.LoginResult;
+import gift.response.LoginResult;
 import gift.request.MemberRequest;
 import gift.service.MemberService;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +19,20 @@ public class MemberController {
 
     // 회원가입 하기
     @PostMapping("/register")
-    public ResponseEntity<Member> register(@RequestBody Member member) {
-        memberService.register(member);
-        return ResponseEntity.ok(member);
+    public ResponseEntity<?> register(@RequestBody Member member) {
+        try{
+            memberService.register(member);
+            return ResponseEntity.ok(member);
+        }
+        catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // 로그인 하기
     @PostMapping("/login")
     public ResponseEntity<LoginResult> login(@RequestBody MemberRequest request) {
-        LoginResult result = memberService.login(request.getId(), request.getPassword());
+        LoginResult result = memberService.login(request.getNickname(), request.getPassword());
         return ResponseEntity.ok(result);
     }
 }

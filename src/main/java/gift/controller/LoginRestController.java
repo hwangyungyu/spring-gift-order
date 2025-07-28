@@ -1,6 +1,6 @@
-package gift.Controller;
+package gift.controller;
 
-import gift.LoginResult;
+import gift.response.LoginResult;
 import gift.request.MemberRequest;
 import gift.response.TokenResponse;
 import gift.service.MemberService;
@@ -22,7 +22,7 @@ public class LoginRestController {
         try {
             // memberService에서 검증을 마치고 토큰을 받아옴
             // memberService에서 검증을 마치고 토큰과 멤버 정보를 받아옴
-            LoginResult result = memberService.login(memberRequest.getId(), memberRequest.getPassword());
+            LoginResult result = memberService.login(memberRequest.getNickname(), memberRequest.getPassword());
 
             return ResponseEntity.ok().body(new TokenResponse(result.getToken(), result.getMember()));
         } catch (Exception e) {

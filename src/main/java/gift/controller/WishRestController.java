@@ -1,11 +1,10 @@
-package gift.Controller;
+package gift.controller;
 
 import gift.Entity.Member;
 import gift.Entity.Option;
 import gift.Entity.Product;
 import gift.annotation.LoginMember;
 import gift.request.WishRequest;
-import gift.response.ProductResponse;
 import gift.response.WishResponse;
 import gift.service.ProductService;
 import gift.service.WishService;
@@ -39,9 +38,14 @@ public class WishRestController {
     }
 
     @DeleteMapping
-    public void removeWish(@RequestBody WishRequest request, @LoginMember Member member) {
-        Product product = productService.findById(request.getProductId());
-        Option option = productService.findOptionById(request.getOptionId());
+    public void removeWish(@LoginMember Member member,
+                           @RequestParam Long productId,
+                           @RequestParam Long optionId) {
+        System.out.println("삭제 요청: member=" + member.getNickname() +
+                ", productId=" + productId + ", optionId=" + optionId);
+
+        Product product = productService.findById(productId);
+        Option option = productService.findOptionById(optionId);
         wishService.removeWish(member, product, option);
     }
 }
