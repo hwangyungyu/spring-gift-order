@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -17,6 +18,10 @@ public class KakaoLoginController {
     private final KakaoProperties kakaoProperties;
     private final KakaoLoginService kakaoLoginService;
 
+    private static final String KAKAO_AUTH_BASE_URL = "https://kauth.kakao.com/oauth/authorize";
+    private static final String RESPONSE_TYPE = "code";
+    private static final String SCOPE = "talk_message";
+
     public KakaoLoginController(KakaoProperties kakaoProperties, KakaoLoginService kakaoLoginService) {
         this.kakaoProperties = kakaoProperties;
         this.kakaoLoginService = kakaoLoginService;
@@ -25,12 +30,16 @@ public class KakaoLoginController {
     // 1. 카카오 로그인 버튼 클릭 시 → 인가 코드 요청
     @GetMapping("/oauth/kakao/login")
     public void redirectToKakao(HttpServletResponse response) throws IOException {
-        String redirectUri = URLEncoder.encode(kakaoProperties.getRedirectUri(), StandardCharsets.UTF_8);
-        String url = "https://kauth.kakao.com/oauth/authorize"
-                + "?response_type=code"
-                + "&client_id=" + kakaoProperties.getClientId()
-                + "&redirect_uri=" + redirectUri
-                + "&scope=talk_message";
+        String url = UriComponentsBuilder
+                .fromUriString(KAKAO_AUTH_BASE_URL)
+                .queryParam("response_type", RESPONSE_TYPE)
+                .queryParam("client_id", kakaoProperties.getClientId())
+                .queryParam("redirect_uri", kakaoProperties.getRedirectUri())
+                .queryParam("scope", SCOPE)
+                .encode()
+                .build()
+                .toUriString();
+
 
         response.sendRedirect(url);
     }
