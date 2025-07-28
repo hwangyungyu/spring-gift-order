@@ -20,7 +20,7 @@ public class KakaoLoginController {
 
     private static final String KAKAO_AUTH_BASE_URL = "https://kauth.kakao.com/oauth/authorize";
     private static final String RESPONSE_TYPE = "code";
-    private static final String SCOPE = "talk_message";
+    private static final String SCOPE = "profile_nickname account_email";
 
     public KakaoLoginController(KakaoProperties kakaoProperties, KakaoLoginService kakaoLoginService) {
         this.kakaoProperties = kakaoProperties;
@@ -35,7 +35,8 @@ public class KakaoLoginController {
                 .queryParam("response_type", RESPONSE_TYPE)
                 .queryParam("client_id", kakaoProperties.getClientId())
                 .queryParam("redirect_uri", kakaoProperties.getRedirectUri())
-                .queryParam("scope", SCOPE)
+                .queryParam("scope", "profile_nickname account_email") // 필수 동의 항목
+                .queryParam("prompt", "consent") // 동의창 항상 뜨게(test 용도)
                 .encode()
                 .build()
                 .toUriString();
