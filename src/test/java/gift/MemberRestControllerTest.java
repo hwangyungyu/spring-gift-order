@@ -39,8 +39,8 @@ public class MemberRestControllerTest {
         memberRepository.save(member);
     }
 
-    @Transactional
     @Test
+    @Transactional
     public void testRegisterMember() {
         var url = "http://localhost:" + port + "/api/register";
         var member = new Member("bye_world", "byeworld@kakao.com", "123456789", "안녕세상", "대한민국", "USER");
