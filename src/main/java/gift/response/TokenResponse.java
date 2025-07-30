@@ -11,4 +11,3 @@ public record TokenResponse(
         this(token, member, member.getRole());
     }
 }
-

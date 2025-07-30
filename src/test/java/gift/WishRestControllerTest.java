@@ -60,14 +60,13 @@ public class WishRestControllerTest {
         opt = optionRepository.save(opt); // 명시 저장
         optionId = opt.getId();
 
-        // 3. 로그인
         var loginRes = client.post()
                 .uri("http://localhost:" + port + "/api/login")
                 .body(new MemberRequest("helloworld", "123456789"))
                 .retrieve()
                 .toEntity(TokenResponse.class);
 
-        token = loginRes.getBody().getToken();
+        token = loginRes.getBody().token();
     }
 
     @Test
