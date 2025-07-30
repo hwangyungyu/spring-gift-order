@@ -30,7 +30,7 @@ public class OrderService {
         Option option = optionRepository.findById(request.getOptionId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 옵션이 존재하지 않습니다."));
 
-        option.checkQuantity(request.getQuantity());
+        option.validateStock(request.getQuantity());
 
         // 재고 차감
         option.setQuantity(option.getQuantity() - request.getQuantity());

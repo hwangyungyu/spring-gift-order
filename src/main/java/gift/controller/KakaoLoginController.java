@@ -49,13 +49,7 @@ public class KakaoLoginController {
     // 2. 카카오 로그인 완료 후 인가코드 콜백 처리
     @GetMapping("/oauth/kakao/callback")
     public String kakaoCallback(@RequestParam String code, HttpServletResponse response) {
-        String token = kakaoLoginService.kakaoLogin(code);
-        Cookie cookie = new Cookie("Authorization", token);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60);
-        response.addCookie(cookie);
-
+        String token = kakaoLoginService.kakaoLogin(code, response);
         return "redirect:/user/products";
     }
 }

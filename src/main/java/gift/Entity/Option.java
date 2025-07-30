@@ -45,7 +45,7 @@ public class Option {
     public void setQuantity(int quantity) { this.quantity = quantity; }
     public void setProduct(Product product) { this.product = product; }
 
-    public void checkQuantity(int requiredQuantity) {
+    public void validateStock(int requiredQuantity) {
         if (this.quantity < requiredQuantity) {
             throw new IllegalArgumentException("재고가 부족합니다.");
         }
