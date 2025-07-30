@@ -20,10 +20,10 @@ import org.slf4j.LoggerFactory;
 @RequestMapping("/user/orders")
 public class OrderViewController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderViewController.class);
+
     private final OrderService orderService;
     private final WishService wishService;
-
-    private static final Logger log = LoggerFactory.getLogger(OrderViewController.class);
 
     public OrderViewController(OrderService orderService, WishService wishService) {
         this.orderService = orderService;
@@ -69,7 +69,7 @@ public class OrderViewController {
             try {
                 orderService.placeOrder(member, req, kakaoAccessToken);
             } catch (Exception e) {
-                log.error("주문 처리 중 오류 발생: optionId={}, message={}", req.getOptionId(), message, e);
+                LOGGER.error("주문 처리 중 오류 발생: optionId={}, message={}", req.getOptionId(), message, e);
             }
         }
 
