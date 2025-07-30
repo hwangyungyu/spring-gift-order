@@ -28,7 +28,7 @@ public class KakaoLoginService {
         this.jwtUtil = jwtUtil;
     }
 
-    public String kakaoLogin(String code, HttpServletResponse response) {
+    public String kakaoLogin(String code) {
         try {
             String accessToken = kakaoOauthClient.getAccessToken(code);
             JsonNode userInfo = kakaoOauthClient.getUserInfo(accessToken);
@@ -38,10 +38,8 @@ public class KakaoLoginService {
             String email = getNullableField(userInfo, "kakao_account", "email");
 
             Member member = registerIfAbsent(kakaoId, nickname, email);
-            String token = jwtUtil.createToken(member);
-            setTokenAsCookie(response, token, accessToken);
+            return jwtUtil.createToken(member);
 
-            return accessToken;
         } catch (Exception e) {
             log.error("카카오 로그인 중 오류 발생", e);
             throw new RuntimeException("카카오 로그인 처리 중 오류 발생: " + e.getMessage());
