@@ -3,6 +3,8 @@ package gift.resolver;
 import gift.Entity.Member;
 import gift.Jwt.JwtUtil;
 import gift.annotation.LoginMember;
+import gift.exception.LoginRequiredException;
+import gift.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,8 +19,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
 
-    public LoginMemberArgumentResolver(JwtUtil jwtUtil) {
+    public LoginMemberArgumentResolver(JwtUtil jwtUtil, MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
         this.jwtUtil = jwtUtil;
     }
 
@@ -63,20 +67,14 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         if (token != null) {
             try {
                 Claims claims = jwtUtil.parseToken(token);
-
-                Member member = new Member();
-                member.setNickname(claims.getSubject());
-                member.setName((String) claims.get("name"));
-                member.setEmail((String) claims.get("email"));
-                member.setAddress((String) claims.get("address"));
-                member.setRole((String) claims.get("role"));
-
-                return member;
+                String nickname = claims.getSubject();
+                return memberRepository.findByNickname(nickname)
+                        .orElseThrow(() -> new LoginRequiredException("인증된 사용자가 아닙니다."));
             } catch (Exception e) {
-                return null;
+                throw new LoginRequiredException("토큰이 유효하지 않습니다.");
             }
         }
 
-        return null;
+        throw new LoginRequiredException("로그인이 필요합니다.");
     }
 }

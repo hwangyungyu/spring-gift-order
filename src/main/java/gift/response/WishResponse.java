@@ -3,7 +3,6 @@ package gift.response;
 import gift.Entity.Wish;
 
 public class WishResponse {
-
     private Long productId;
     private String productName;
     private int price;

@@ -1,0 +1,19 @@
+[33m89f8ae9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mstep2[m[33m)[m refactor(Log) : edit Java convention for static final and log -> LOGGER
+[33mcf61efa[m feat(exception) : add global exception handler
+[33m0800550[m refactor(kakao) : refactor cookie response to controller
+[33m98b4677[m refactor(kakao) : move url to application properties
+[33m1878bd7[m refactor(jwt): move secret key to application properties
+[33m32c1523[m feat(order) : make order service and Kakao message sending
+[33m2cc39ea[m fix : typo
+[33mb1c0610[m feat(login.html) : add kakao login
+[33m8e932f7[m refactor : replace println -> logger in KakaoOauthClient, improve code readability in KakaoLoingController
+[33m8d25bc9[m test : update tests for Member, Product, and Wish
+[33m3eaa1e3[m refactoer(log) : e.printStackTrace -> log.error
+[33me4a3db2[m refactor(KakaoLoginService) : separate API logic into KakaoOauthClient, refactor(RestTemplate) : add RestTemplate bean and set timeout
+[33m5ff14f1[m test(Wish) : fix WishRestControllerTest and minor issues
+[33m5ef4c8d[m fix(client.id) : replace hard coding -> argument
+[33mae6f3e4[m refactor(Login) : id -> nickname, feat(Kakaologin) : make kakao login logic
+[33m16b2064[m[33m ([m[1;31mupstream/hwangyungyu[m[33m, [m[1;32mhwangyungyu[m[33m)[m 전남대_BE 황윤규 - step1 (#157)
+[33mc912560[m gift-enhancement commit (#93)
+[33m4f71a3f[m[33m ([m[1;31mupstream/main[m[33m, [m[1;31mupstream/HEAD[m[33m, [m[1;31morigin/hwangyungyu[m[33m)[m feat: set up the project
+[33m5564fd5[m Initial commit
